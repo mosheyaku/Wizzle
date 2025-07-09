@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+backend/backend/__pycache__
+*.py[cod]
+*.egg
+*.egg-info/
+dist/
+build/
+*.log
+
+# Virtual environment
+venv/
+.env
+
+# Django
+db.sqlite3
+media/
+staticfiles/
+
+# Node.js / React
+node_modules/
+build/
+.env.local
+.env.development
+.env.production
+
+# macOS
+.DS_Store
+
+# IDEs
+.idea/
+.vscode/
+
+# Git
+*.swp
