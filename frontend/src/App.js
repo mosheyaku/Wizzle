@@ -1,11 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import UploadPDF from './components/UploadPDF';
+import DisplayPDFWords from './components/DisplayPDFWords';
 
 function App() {
+  const [pdfId, setPdfId] = useState(null);
+
+  const handleUploadSuccess = (data) => {
+    setPdfId(data.id); 
+  };
+
   return (
-    <div className="App">
-      <h1>Wizzle PDF Upload</h1>
-      <UploadPDF />
+    <div>
+      <h1>Wizzle PDF Uploader & Viewer</h1>
+
+      <UploadPDF onSuccess={handleUploadSuccess} />
+
+      {pdfId && (
+        <>
+          <hr />
+          <DisplayPDFWords pdfId={pdfId} />
+        </>
+      )}
     </div>
   );
 }
