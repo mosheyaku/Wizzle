@@ -8,7 +8,7 @@ import fitz
 import requests
 from django.conf import settings
 
-from .models import UploadedPDF
+from .models import UploadedPDF, TranslationCache
 from .serializers import UploadedPDFSerializer
 
 logger = logging.getLogger(__name__)
@@ -65,6 +65,10 @@ class TranslateWordView(APIView):
         word = request.data.get('word')
         if not word:
             return Response({'error': 'No word provided'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        cached = TranslationCache.objects.filter(word__iexact=word).first()
+        if cached:
+            return Response({'translated': cached.translated})
 
         headers = {
             'Ocp-Apim-Subscription-Key': AZURE_TRANSLATOR_KEY,
@@ -77,6 +81,9 @@ class TranslateWordView(APIView):
             response = requests.post(AZURE_TRANSLATOR_URL, headers=headers, json=body)
             response.raise_for_status()
             translated = response.json()[0]['translations'][0]['text']
+
+            TranslationCache.objects.create(word=word, translated=translated)
+
             return Response({'translated': translated})
 
         except Exception as e:
