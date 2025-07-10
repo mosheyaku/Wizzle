@@ -4,6 +4,7 @@ import axios from 'axios';
 export default function DisplayPDFWords({ pdfId }) {
   const [pages, setPages] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [translatingWord, setTranslatingWord] = useState(null);
 
   const apiBaseUrl = process.env.REACT_APP_API_BASE_URL;
 
@@ -22,6 +23,20 @@ export default function DisplayPDFWords({ pdfId }) {
     fetchText();
   }, [pdfId, apiBaseUrl]);
 
+  const handleWordClick = async (word) => {
+    setTranslatingWord(word);
+    try {
+      const res = await axios.post(`${apiBaseUrl}/api/pdf/translate/`, { word });
+      const translated = res.data.translated;
+      alert(`"${word}" in Hebrew: ${translated}`);
+    } catch (err) {
+      console.error('Translation failed:', err);
+      alert(`Translation failed for "${word}".`);
+    } finally {
+      setTranslatingWord(null);
+    }
+  };
+
   if (loading) return <p>Loading text...</p>;
 
   return (
@@ -33,8 +48,12 @@ export default function DisplayPDFWords({ pdfId }) {
             {words.map((w, i) => (
               <span
                 key={i}
-                style={{ marginRight: '5px', cursor: 'pointer' }}
-                onClick={() => alert(`You clicked: ${w.word}`)}
+                style={{
+                  marginRight: '5px',
+                  cursor: 'pointer',
+                  textDecoration: translatingWord === w.word ? 'underline' : 'none',
+                }}
+                onClick={() => handleWordClick(w.word)}
               >
                 {w.word}
               </span>
