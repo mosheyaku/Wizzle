@@ -1,0 +1,236 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Lora:wght@600&display=swap');
+
+:root {
+  --bg-color: #fdf8ef;
+  --text-color: #3d3427;
+  --accent-color: #b49a78;
+  --accent-hover: #9f8766;
+  --border-color: #ded2c0;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --popup-text: #1f1d1a;
+  --glass-blur: rgba(255, 255, 255, 0.15);
+}
+
+[data-theme='dark'] {
+  --bg-color: #1a1b20;
+  --text-color: #e7e5e0;
+  --accent-color: #9f7d50;
+  --accent-hover: #8e6d43;
+  --border-color: #2e2f35;
+  --shadow-color: rgba(0, 0, 0, 0.6);
+  --popup-text: #f1efea;
+  --glass-blur: rgba(255, 255, 255, 0.07);
+}
+
+body {
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-family: 'Merriweather', serif;
+  margin: 0;
+  padding: 0;
+  transition: background 0.3s, color 0.3s;
+}
+
+.book-container {
+  min-height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem 1rem;
+  background: var(--bg-color);
+}
+
+.book-frame {
+  background: var(--bg-color);
+  width: 760px;
+  height: 520px;
+  padding: 2.5rem 3rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px var(--shadow-color);
+  border: 2px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.book-page {
+  flex-grow: 1;
+  overflow: hidden;
+  font-size: 18.5px;
+  line-height: 1.9;
+  color: var(--text-color);
+  text-align: justify;
+  font-weight: 400;
+  padding-right: 4px;
+}
+
+.book-text span {
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+.book-text span:hover {
+  color: var(--accent-hover);
+}
+
+.book-text span::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 2px;
+  height: 2px;
+  width: 0%;
+  background-color: var(--accent-hover);
+  transition: width 0.3s ease;
+}
+
+.book-text span:hover::after {
+  width: 100%;
+}
+
+.pagination-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  margin-top: 1.5rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.pagination-buttons button {
+  padding: 0.5rem 1.3rem;
+  background-color: var(--accent-color);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+  font-family: 'Lora', serif;
+}
+
+.pagination-buttons button:hover {
+  background-color: var(--accent-hover);
+}
+
+.pagination-buttons button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Glassy Popup */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 10, 10, 0.45);
+  backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.popup-card {
+  background: var(--glass-blur);
+  backdrop-filter: blur(14px);
+  border-radius: 20px;
+  padding: 2rem 3rem;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.25);
+  color: var(--popup-text);
+  animation: fadeInPopup 0.35s ease-out;
+  font-family: 'Merriweather', serif;
+}
+
+.popup-card h2 {
+  font-family: 'Lora', serif;
+  font-size: 28px;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  color: var(--text-color);
+  border-bottom: 2px solid var(--accent-color);
+  padding-bottom: 0.4rem;
+  letter-spacing: 0.02em;
+}
+
+.original-word {
+  font-weight: 700;
+  font-style: italic;
+  color: var(--accent-color);
+  margin-top: 1rem;
+  user-select: text;
+}
+
+.translated-word {
+  font-weight: 500;
+  color: var(--text-color);
+  user-select: text;
+  margin-top: 0.6rem;
+}
+
+.popup-card button {
+  margin-top: 1.8rem;
+  background-color: var(--accent-color);
+  border: none;
+  padding: 0.6rem 1.6rem;
+  border-radius: 10px;
+  font-size: 17px;
+  font-weight: 700;
+  color: white;
+  cursor: pointer;
+  font-family: 'Lora', serif;
+  transition: background 0.3s;
+}
+
+.popup-card button:hover {
+  background-color: var(--accent-hover);
+}
+
+/* Loader + measurement */
+.book-loading {
+  font-family: 'Merriweather', serif;
+  font-size: 22px;
+  color: var(--text-color);
+  text-align: center;
+  margin-top: 4rem;
+}
+
+.measure-container {
+  position: fixed;
+  top: -10000px;
+  left: -10000px;
+  width: 700px;
+  height: 420px;
+  font-family: 'Merriweather', serif;
+  font-size: 18.5px;
+  line-height: 1.9;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow: visible;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.measure-word {
+  padding: 2px 4px;
+}
+
+@keyframes fadeInPopup {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
