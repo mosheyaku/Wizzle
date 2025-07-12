@@ -3,10 +3,22 @@ import UploadPDF from './components/UploadPDF';
 import DisplayPDFWords from './components/DisplayPDFWords';
 
 function App() {
-  const [pdfId, setPdfId] = useState(null);
+  const [hasUploadedThisSession, setHasUploadedThisSession] = useState(() => {
+    return sessionStorage.getItem('hasUploaded') === 'true';
+  });
+
+  const [pdfId, setPdfId] = useState(() => {
+    if (sessionStorage.getItem('hasUploaded') === 'true') {
+      return localStorage.getItem('pdfId') || null;
+    }
+    return null;
+  });
 
   const handleUploadSuccess = (data) => {
-    setPdfId(data.id); 
+    setPdfId(data.id);
+    localStorage.setItem('pdfId', data.id);
+    sessionStorage.setItem('hasUploaded', 'true');  
+    setHasUploadedThisSession(true);
   };
 
   return (

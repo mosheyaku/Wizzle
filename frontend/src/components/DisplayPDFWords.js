@@ -5,14 +5,16 @@ import './DisplayPDFWords.css';
 export default function DisplayPDFWords({ pdfId }) {
   const [pages, setPages] = useState([]);
   const [paginatedPages, setPaginatedPages] = useState([]);
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(() => {
+    const savedPage = localStorage.getItem(`currentPage_${pdfId}`);
+    return savedPage ? parseInt(savedPage, 10) : 0;
+  });
   const [showPopup, setShowPopup] = useState(false);
   const [translatedWord, setTranslatedWord] = useState('');
   const [originalWord, setOriginalWord] = useState('');
   const [loading, setLoading] = useState(true);
 
   const apiBaseUrl = process.env.REACT_APP_API_BASE_URL;
-
   const measureRef = useRef(null);
   const [allWords, setAllWords] = useState([]);
 
@@ -22,14 +24,16 @@ export default function DisplayPDFWords({ pdfId }) {
         setLoading(true);
         const res = await axios.get(`${apiBaseUrl}/api/pdf/${pdfId}/extract/`);
         setPages(res.data.pages);
-        setCurrentPage(0);
+        setCurrentPage(() => {
+          const savedPage = localStorage.getItem(`currentPage_${pdfId}`);
+          return savedPage ? parseInt(savedPage, 10) : 0;
+        });
       } catch (err) {
         console.error('Failed to fetch extracted text:', err);
       } finally {
         setLoading(false);
       }
     };
-
     fetchText();
   }, [pdfId, apiBaseUrl]);
 
@@ -81,7 +85,6 @@ export default function DisplayPDFWords({ pdfId }) {
     }
 
     setPaginatedPages(chunks);
-    setCurrentPage(0);
   }, [allWords]);
 
   const handleTranslate = async (word) => {
@@ -101,11 +104,21 @@ export default function DisplayPDFWords({ pdfId }) {
     setOriginalWord('');
   };
 
-  const prevPage = () => setCurrentPage((p) => (p > 0 ? p - 1 : 0));
-  const nextPage = () =>
-    setCurrentPage((p) =>
-      p < paginatedPages.length - 1 ? p + 1 : p
-    );
+  const prevPage = () => {
+    setCurrentPage((p) => {
+      const newPage = p > 0 ? p - 1 : 0;
+      localStorage.setItem(`currentPage_${pdfId}`, newPage);
+      return newPage;
+    });
+  };
+
+  const nextPage = () => {
+    setCurrentPage((p) => {
+      const newPage = p < paginatedPages.length - 1 ? p + 1 : p;
+      localStorage.setItem(`currentPage_${pdfId}`, newPage);
+      return newPage;
+    });
+  };
 
   if (loading)
     return <p className="book-loading">Loading PDF content...</p>;
