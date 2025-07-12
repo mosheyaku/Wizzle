@@ -1,0 +1,32 @@
+.upload-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 3rem 0;
+  font-family: 'Lora', serif;
+}
+
+.file-label {
+  background: #f3f0eb;
+  border: 2px dashed #c7b28d;
+  padding: 1rem 1.6rem;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #6b4f27;
+  font-weight: 600;
+  transition: all 0.25s ease;
+  box-shadow: 4px 4px 8px #e1dbd4, -4px -4px 8px #ffffff;
+  user-select: none;
+  text-align: center;
+}
+
+.file-label:hover {
+  background: #f9f6f1;
+  color: #4a3b2e;
+  border-color: #b49d7b;
+}
+
+.file-input {
+  display: none;
+}
