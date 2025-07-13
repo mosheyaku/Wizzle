@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import UploadPDF from './components/UploadPDF';
 import DisplayPDFWords from './components/DisplayPDFWords';
+import './App.css';
 
 function App() {
   const [hasUploadedThisSession, setHasUploadedThisSession] = useState(() => {
@@ -17,16 +18,14 @@ function App() {
   const handleUploadSuccess = (data) => {
     setPdfId(data.id);
     localStorage.setItem('pdfId', data.id);
-    sessionStorage.setItem('hasUploaded', 'true');  
+    sessionStorage.setItem('hasUploaded', 'true');
     setHasUploadedThisSession(true);
   };
 
   return (
-    <div>
-      <h1>Wizzle PDF Uploader & Viewer</h1>
-
+    <div className={`app-container ${pdfId ? 'uploaded' : ''}`}>
+      <h1 className="site-title">Wizzle PDF Uploader & Viewer</h1>
       <UploadPDF onSuccess={handleUploadSuccess} />
-
       {pdfId && (
         <>
           <hr />
