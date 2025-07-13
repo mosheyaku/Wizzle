@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import './Signup.css';
+import Popup from '../Popup';
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -12,8 +14,11 @@ export default function Signup() {
   });
 
   const [error, setError] = useState('');
+  const [showPopup, setShowPopup] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -30,7 +35,7 @@ export default function Signup() {
       first_name: formData.first_name,
       last_name: formData.last_name,
       email: formData.email,
-      username: formData.email, 
+      username: formData.email,
       password: formData.password,
       password2: formData.password2,
     };
@@ -40,7 +45,13 @@ export default function Signup() {
         `${process.env.REACT_APP_API_BASE_URL}/api/users/register/`,
         submitData
       );
-      alert('🎉 Account created! You can now log in.');
+
+      localStorage.setItem('user', JSON.stringify({
+        first_name: res.data.first_name || formData.first_name,
+        email: res.data.email || formData.email,
+      }));
+
+      setShowPopup(true);
     } catch (err) {
       console.error('Signup error:', err.response);
       setError(
@@ -49,6 +60,11 @@ export default function Signup() {
         'Signup failed'
       );
     }
+  };
+
+  const handlePopupClose = () => {
+    setShowPopup(false);
+    navigate('/'); 
   };
 
   return (
@@ -131,6 +147,13 @@ export default function Signup() {
           Sign Up
         </button>
       </form>
+
+      {showPopup && (
+        <Popup
+          message="🎉 Account created successfully!"
+          onClose={handlePopupClose}
+        />
+      )}
     </div>
   );
 }
