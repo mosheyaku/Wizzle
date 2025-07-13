@@ -51,7 +51,6 @@ export default function Signup({ onSignupSuccess }) {
         email: res.data.email || formData.email,
       };
 
-      // Inform parent (App) about new logged in user
       if (onSignupSuccess) {
         onSignupSuccess(userData);
       }
@@ -75,7 +74,7 @@ export default function Signup({ onSignupSuccess }) {
   return (
     <div className="signup-container">
       <h2 className="signup-title">Create an Account</h2>
-      <form onSubmit={handleSubmit} className="signup-form" noValidate>
+      <form onSubmit={handleSubmit} className="signup-form" noValidate autoComplete="off">
         <input
           type="text"
           name="first_name"
@@ -83,7 +82,7 @@ export default function Signup({ onSignupSuccess }) {
           value={formData.first_name}
           onChange={handleChange}
           required
-          autoComplete="given-name"
+          autoComplete="off"
         />
         <input
           type="text"
@@ -92,7 +91,7 @@ export default function Signup({ onSignupSuccess }) {
           value={formData.last_name}
           onChange={handleChange}
           required
-          autoComplete="family-name"
+          autoComplete="off"
         />
         <input
           type="email"
@@ -101,7 +100,7 @@ export default function Signup({ onSignupSuccess }) {
           value={formData.email}
           onChange={handleChange}
           required
-          autoComplete="email"
+          autoComplete="off"
         />
 
         <div className="password-wrapper">
