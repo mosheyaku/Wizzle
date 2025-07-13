@@ -30,3 +30,19 @@
 .file-input {
   display: none;
 }
+
+
+@media (max-width: 768px) {
+  .upload-container {
+    margin: 2rem 0;
+  }
+
+  .file-label {
+    padding: 0.8rem 1.2rem;
+    font-size: 0.95rem;
+  }
+
+  .app-container.uploaded .upload-container {
+    margin-top: 1rem;
+  }
+}

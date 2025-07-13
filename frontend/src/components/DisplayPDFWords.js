@@ -170,11 +170,7 @@ export default function DisplayPDFWords({ pdfId }) {
         </div>
       </div>
 
-      <div
-        className="measure-container"
-        ref={measureRef}
-        aria-hidden="true"
-      />
+      <div className="measure-container" ref={measureRef} aria-hidden="true" />
 
       {showPopup && (
         <div
