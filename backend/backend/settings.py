@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'accounts',
     'pdfs',
     'rest_framework',
     'corsheaders',
@@ -140,3 +141,10 @@ CORS_ALLOWED_ORIGINS = [
 AZURE_TRANSLATOR_KEY = config('AZURE_TRANSLATOR_KEY')
 AZURE_TRANSLATOR_REGION = config('AZURE_TRANSLATOR_REGION')
 AZURE_TRANSLATOR_URL = config('AZURE_TRANSLATOR_URL')
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
