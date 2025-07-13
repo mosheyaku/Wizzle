@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './Signup.css';
 import Popup from '../Popup';
 
-export default function Signup() {
+export default function Signup({ onSignupSuccess }) {
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -46,10 +46,15 @@ export default function Signup() {
         submitData
       );
 
-      localStorage.setItem('user', JSON.stringify({
+      const userData = {
         first_name: res.data.first_name || formData.first_name,
         email: res.data.email || formData.email,
-      }));
+      };
+
+      // Inform parent (App) about new logged in user
+      if (onSignupSuccess) {
+        onSignupSuccess(userData);
+      }
 
       setShowPopup(true);
     } catch (err) {
@@ -64,7 +69,7 @@ export default function Signup() {
 
   const handlePopupClose = () => {
     setShowPopup(false);
-    navigate('/'); 
+    navigate('/');
   };
 
   return (

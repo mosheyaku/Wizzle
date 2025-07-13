@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Link,
-  useLocation,
+  useNavigate,
 } from 'react-router-dom';
 import UploadPDF from './components/UploadPDF';
 import DisplayPDFWords from './components/DisplayPDFWords';
@@ -26,9 +26,14 @@ function MainPage({ pdfId, onUploadSuccess, user }) {
   );
 }
 
-function Layout({ children }) {
-  const location = useLocation();
-  const user = JSON.parse(localStorage.getItem('user'));
+function Layout({ children, user, setUser }) {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    setUser(null);
+    navigate('/');
+  };
 
   return (
     <>
@@ -37,7 +42,18 @@ function Layout({ children }) {
         <nav>
           <Link to="/" className="nav-link">Home</Link>
           {!user && <Link to="/signup" className="nav-link">Sign Up</Link>}
-          {user && <span className="nav-user">👋 {user.first_name}</span>}
+          {user && (
+            <>
+              <span className="nav-user">{user.first_name}</span>
+              <button
+                className="nav-link logout-btn"
+                onClick={handleLogout}
+                type="button"
+              >
+                Logout
+              </button>
+            </>
+          )}
         </nav>
       </header>
       <main>{children}</main>
@@ -46,9 +62,9 @@ function Layout({ children }) {
 }
 
 function App() {
-  const [hasUploadedThisSession, setHasUploadedThisSession] = useState(() => {
-    return sessionStorage.getItem('hasUploaded') === 'true';
-  });
+  const [hasUploadedThisSession, setHasUploadedThisSession] = useState(() =>
+    sessionStorage.getItem('hasUploaded') === 'true'
+  );
 
   const [pdfId, setPdfId] = useState(() => {
     if (sessionStorage.getItem('hasUploaded') === 'true') {
@@ -75,20 +91,21 @@ function App() {
         <Route
           path="/"
           element={
-            <Layout>
-              <MainPage
-                pdfId={pdfId}
-                onUploadSuccess={handleUploadSuccess}
-                user={user}
-              />
+            <Layout user={user} setUser={setUser}>
+              <MainPage pdfId={pdfId} onUploadSuccess={handleUploadSuccess} user={user} />
             </Layout>
           }
         />
         <Route
           path="/signup"
           element={
-            <Layout>
-              <Signup />
+            <Layout user={user} setUser={setUser}>
+              <Signup
+                onSignupSuccess={(userData) => {
+                  setUser(userData);
+                  localStorage.setItem('user', JSON.stringify(userData));
+                }}
+              />
             </Layout>
           }
         />
