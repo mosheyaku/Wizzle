@@ -5,22 +5,27 @@ from django.contrib.auth.password_validation import validate_password
 User = get_user_model()
 
 class RegisterSerializer(serializers.ModelSerializer):
-    password2 = serializers.CharField(write_only=True)
+    password2 = serializers.CharField(write_only=True, required=False)
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email', 'password', 'password2']
+        fields = ['first_name', 'last_name', 'email', 'username', 'password', 'password2']
         extra_kwargs = {
             'password': {'write_only': True},
+            'username': {'write_only': True},
         }
 
     def validate(self, attrs):
-        if attrs['password'] != attrs['password2']:
+        password = attrs.get('password')
+        password2 = attrs.get('password2')
+
+        if password2 and password != password2:
             raise serializers.ValidationError({"password": "Passwords do not match."})
-        validate_password(attrs['password'])
+
+        validate_password(password)
         return attrs
 
     def create(self, validated_data):
-        validated_data.pop('password2')
+        validated_data.pop('password2', None)  # remove if present
         user = User.objects.create_user(**validated_data)
         return user

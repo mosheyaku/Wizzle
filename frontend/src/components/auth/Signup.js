@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import './Signup.css';
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -11,6 +12,8 @@ export default function Signup() {
   });
 
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -23,21 +26,35 @@ export default function Signup() {
       return setError('Passwords do not match');
     }
 
+    const submitData = {
+      first_name: formData.first_name,
+      last_name: formData.last_name,
+      email: formData.email,
+      username: formData.email, 
+      password: formData.password,
+      password2: formData.password2,
+    };
+
     try {
       const res = await axios.post(
         `${process.env.REACT_APP_API_BASE_URL}/api/users/register/`,
-        formData
+        submitData
       );
       alert('🎉 Account created! You can now log in.');
     } catch (err) {
-      setError(err.response?.data?.detail || 'Signup failed');
+      console.error('Signup error:', err.response);
+      setError(
+        err.response?.data?.detail ||
+        JSON.stringify(err.response?.data) ||
+        'Signup failed'
+      );
     }
   };
 
   return (
     <div className="signup-container">
-      <h2>Create an Account</h2>
-      <form onSubmit={handleSubmit} className="signup-form">
+      <h2 className="signup-title">Create an Account</h2>
+      <form onSubmit={handleSubmit} className="signup-form" noValidate>
         <input
           type="text"
           name="first_name"
@@ -45,6 +62,7 @@ export default function Signup() {
           value={formData.first_name}
           onChange={handleChange}
           required
+          autoComplete="given-name"
         />
         <input
           type="text"
@@ -53,6 +71,7 @@ export default function Signup() {
           value={formData.last_name}
           onChange={handleChange}
           required
+          autoComplete="family-name"
         />
         <input
           type="email"
@@ -61,25 +80,56 @@ export default function Signup() {
           value={formData.email}
           onChange={handleChange}
           required
+          autoComplete="email"
         />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="password"
-          name="password2"
-          placeholder="Confirm password"
-          value={formData.password2}
-          onChange={handleChange}
-          required
-        />
+
+        <div className="password-wrapper">
+          <input
+            type={showPassword ? 'text' : 'password'}
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+            autoComplete="new-password"
+            style={{ WebkitTextSecurity: showPassword ? 'none' : 'disc' }}
+          />
+          <span
+            className="toggle-password"
+            onClick={() => setShowPassword((prev) => !prev)}
+            role="button"
+            tabIndex={0}
+          >
+            {showPassword ? 'Hide' : 'Show'}
+          </span>
+        </div>
+
+        <div className="password-wrapper">
+          <input
+            type={showPassword2 ? 'text' : 'password'}
+            name="password2"
+            placeholder="Confirm password"
+            value={formData.password2}
+            onChange={handleChange}
+            required
+            autoComplete="new-password"
+            style={{ WebkitTextSecurity: showPassword2 ? 'none' : 'disc' }}
+          />
+          <span
+            className="toggle-password"
+            onClick={() => setShowPassword2((prev) => !prev)}
+            role="button"
+            tabIndex={0}
+          >
+            {showPassword2 ? 'Hide' : 'Show'}
+          </span>
+        </div>
+
         {error && <p className="signup-error">{error}</p>}
-        <button type="submit">Sign Up</button>
+
+        <button className="signup-button" type="submit">
+          Sign Up
+        </button>
       </form>
     </div>
   );
