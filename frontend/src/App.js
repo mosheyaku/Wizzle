@@ -5,10 +5,12 @@ import {
   Route,
   Link,
   useNavigate,
+  useLocation,
 } from 'react-router-dom';
 import UploadPDF from './components/UploadPDF';
 import DisplayPDFWords from './components/DisplayPDFWords';
 import Signup from './components/auth/Signup';
+import Login from './components/auth/Login'; // Your actual Login component here
 import './App.css';
 
 function MainPage({ pdfId, onUploadSuccess, user }) {
@@ -28,6 +30,7 @@ function MainPage({ pdfId, onUploadSuccess, user }) {
 
 function Layout({ children, user, setUser }) {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     localStorage.removeItem('user');
@@ -41,7 +44,8 @@ function Layout({ children, user, setUser }) {
         <h1 className="site-title">Wizzle PDF Viewer</h1>
         <nav>
           <Link to="/" className="nav-link">Home</Link>
-          {!user && <Link to="/signup" className="nav-link">Sign Up</Link>}
+          {!user && location.pathname !== '/login' && <Link to="/login" className="nav-link">Login</Link>}
+          {!user && location.pathname !== '/signup' && <Link to="/signup" className="nav-link">Sign Up</Link>}
           {user && (
             <>
               <span className="nav-user">{user.first_name}</span>
@@ -74,8 +78,19 @@ function App() {
   });
 
   const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem('user');
-    return saved ? JSON.parse(saved) : null;
+    try {
+      const saved = localStorage.getItem('user');
+      if (!saved) return null;
+      const parsed = JSON.parse(saved);
+      if (!parsed || !parsed.first_name) {
+        localStorage.removeItem('user');
+        return null;
+      }
+      return parsed;
+    } catch {
+      localStorage.removeItem('user');
+      return null;
+    }
   });
 
   const handleUploadSuccess = (data) => {
@@ -84,6 +99,11 @@ function App() {
     sessionStorage.setItem('hasUploaded', 'true');
     setHasUploadedThisSession(true);
   };
+
+  // Debug: log user state to verify update
+  React.useEffect(() => {
+    console.log('User state changed:', user);
+  }, [user]);
 
   return (
     <Router>
@@ -102,6 +122,19 @@ function App() {
             <Layout user={user} setUser={setUser}>
               <Signup
                 onSignupSuccess={(userData) => {
+                  setUser(userData);
+                  localStorage.setItem('user', JSON.stringify(userData));
+                }}
+              />
+            </Layout>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <Layout user={user} setUser={setUser}>
+              <Login
+                onLoginSuccess={(userData) => {
                   setUser(userData);
                   localStorage.setItem('user', JSON.stringify(userData));
                 }}
