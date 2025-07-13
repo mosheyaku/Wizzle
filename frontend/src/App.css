@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: 'Poppins', Arial, sans-serif;
   background-color: #fefaf3;
 }
 
@@ -25,11 +25,12 @@ body {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1000;
 }
 
 .top-nav nav {
   display: flex;
+  align-items: center;
   gap: 1.2rem;
 }
 
@@ -41,5 +42,35 @@ body {
 }
 
 .nav-link:hover {
+  color: #a17a4e;
+}
+
+.nav-user {
+  color: #7b5c36;
+  font-weight: bold;
+  font-size: 1rem;
+  user-select: none;
+}
+
+.welcome-message {
+  font-size: 1.1rem;
+  color: #5c452a;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.logout-btn {
+  background: none;
+  border: none;
+  font-weight: bold;
+  color: #7b5c36;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 1rem;
+  font-size: 1rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.logout-btn:hover {
   color: #a17a4e;
 }
