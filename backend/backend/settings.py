@@ -33,7 +33,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'auth',
+    'accounts',
     'pdfs',
     'rest_framework',
     'corsheaders',
