@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Popup from '../Popup';
+import './AuthBase.css';
 
 export default function Login({ onLoginSuccess }) {
   const [formData, setFormData] = useState({
@@ -10,6 +11,7 @@ export default function Login({ onLoginSuccess }) {
   });
   const [error, setError] = useState('');
   const [showPopup, setShowPopup] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) =>
@@ -47,15 +49,16 @@ export default function Login({ onLoginSuccess }) {
       setShowPopup(true);
     } catch (err) {
       console.error('Login error:', err.response);
-
-      if (err.response?.status === 401) {
+      const errors = err.response?.data;
+      if (typeof errors === 'object') {
+        const flat = Object.entries(errors)
+          .map(([field, msg]) => `${field}: ${Array.isArray(msg) ? msg[0] : msg}`)
+          .join('\n');
+        setError(flat);
+      } else if (err.response?.status === 401) {
         setError('Invalid email or password.');
       } else {
-        setError(
-          err.response?.data?.detail ||
-            JSON.stringify(err.response?.data) ||
-            'Login failed. Please try again.'
-        );
+        setError('Login failed. Please try again.');
       }
     }
   };
@@ -66,32 +69,48 @@ export default function Login({ onLoginSuccess }) {
   };
 
   return (
-    <div>
-      <h2>Login to Your Account</h2>
-      <form onSubmit={handleSubmit} noValidate autoComplete="off">
-        <input
-          type="email"
-          name="email"
-          placeholder="Email address"
-          value={formData.email}
-          onChange={handleChange}
-          required
-          autoComplete="email"
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          required
-          autoComplete="new-password" 
-        />
+    <>
+      <div className="form-container">
+        <h2 className="form-title">Login to Your Account</h2>
+        <form onSubmit={handleSubmit} className="form" noValidate autoComplete="off">
+          <input
+            type="email"
+            name="email"
+            placeholder="Email address"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            autoComplete="off"
+          />
 
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+          <div className="password-wrapper">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              name="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              autoComplete="current-password"
+              style={{ WebkitTextSecurity: showPassword ? 'none' : 'disc' }}
+            />
+            <span
+              className="toggle-password"
+              onClick={() => setShowPassword((prev) => !prev)}
+              role="button"
+              tabIndex={0}
+            >
+              {showPassword ? 'Hide' : 'Show'}
+            </span>
+          </div>
 
-        <button type="submit">Login</button>
-      </form>
+          {error && <p className="form-error">{error}</p>}
+
+          <button className="form-button" type="submit">
+            Login
+          </button>
+        </form>
+      </div>
 
       {showPopup && (
         <Popup
@@ -99,6 +118,6 @@ export default function Login({ onLoginSuccess }) {
           onClose={handlePopupClose}
         />
       )}
-    </div>
+    </>
   );
 }
