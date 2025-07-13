@@ -165,14 +165,12 @@ body {
 .original-word {
   font-weight: 700;
   font-style: italic;
-  color: var(--accent-color);
   margin-top: 1rem;
   user-select: text;
 }
 
 .translated-word {
   font-weight: 500;
-  color: var(--text-color);
   user-select: text;
   margin-top: 0.6rem;
 }
@@ -291,6 +289,8 @@ body {
   .original-word,
   .translated-word {
     font-size: 15px;
+    color: var(--accent-color);
+
   }
 
   .measure-container {
