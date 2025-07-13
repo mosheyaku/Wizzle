@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import './Signup.css';
 import Popup from '../Popup';
+import './AuthBase.css';
 
 export default function Signup({ onSignupSuccess }) {
   const [formData, setFormData] = useState({
@@ -58,11 +58,15 @@ export default function Signup({ onSignupSuccess }) {
       setShowPopup(true);
     } catch (err) {
       console.error('Signup error:', err.response);
-      setError(
-        err.response?.data?.detail ||
-        JSON.stringify(err.response?.data) ||
-        'Signup failed'
-      );
+      const errors = err.response?.data;
+      if (typeof errors === 'object') {
+        const flat = Object.entries(errors)
+          .map(([field, msg]) => `${field}: ${Array.isArray(msg) ? msg[0] : msg}`)
+          .join('\n');
+        setError(flat);
+      } else {
+        setError('Signup failed. Please check your inputs.');
+      }
     }
   };
 
@@ -72,85 +76,87 @@ export default function Signup({ onSignupSuccess }) {
   };
 
   return (
-    <div className="signup-container">
-      <h2 className="signup-title">Create an Account</h2>
-      <form onSubmit={handleSubmit} className="signup-form" noValidate autoComplete="off">
-        <input
-          type="text"
-          name="first_name"
-          placeholder="First name"
-          value={formData.first_name}
-          onChange={handleChange}
-          required
-          autoComplete="off"
-        />
-        <input
-          type="text"
-          name="last_name"
-          placeholder="Last name"
-          value={formData.last_name}
-          onChange={handleChange}
-          required
-          autoComplete="off"
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Email address"
-          value={formData.email}
-          onChange={handleChange}
-          required
-          autoComplete="off"
-        />
-
-        <div className="password-wrapper">
+    <>
+      <div className="form-container">
+        <h2 className="form-title">Create an Account</h2>
+        <form onSubmit={handleSubmit} className="form" noValidate autoComplete="off">
           <input
-            type={showPassword ? 'text' : 'password'}
-            name="password"
-            placeholder="Password"
-            value={formData.password}
+            type="text"
+            name="first_name"
+            placeholder="First name"
+            value={formData.first_name}
             onChange={handleChange}
             required
-            autoComplete="new-password"
-            style={{ WebkitTextSecurity: showPassword ? 'none' : 'disc' }}
+            autoComplete="off"
           />
-          <span
-            className="toggle-password"
-            onClick={() => setShowPassword((prev) => !prev)}
-            role="button"
-            tabIndex={0}
-          >
-            {showPassword ? 'Hide' : 'Show'}
-          </span>
-        </div>
-
-        <div className="password-wrapper">
           <input
-            type={showPassword2 ? 'text' : 'password'}
-            name="password2"
-            placeholder="Confirm password"
-            value={formData.password2}
+            type="text"
+            name="last_name"
+            placeholder="Last name"
+            value={formData.last_name}
             onChange={handleChange}
             required
-            autoComplete="new-password"
-            style={{ WebkitTextSecurity: showPassword2 ? 'none' : 'disc' }}
+            autoComplete="off"
           />
-          <span
-            className="toggle-password"
-            onClick={() => setShowPassword2((prev) => !prev)}
-            role="button"
-            tabIndex={0}
-          >
-            {showPassword2 ? 'Hide' : 'Show'}
-          </span>
-        </div>
+          <input
+            type="email"
+            name="email"
+            placeholder="Email address"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            autoComplete="off"
+          />
 
-        {error && <p className="signup-error">{error}</p>}
+          <div className="password-wrapper">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              name="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              autoComplete="new-password"
+              style={{ WebkitTextSecurity: showPassword ? 'none' : 'disc' }}
+            />
+            <span
+              className="toggle-password"
+              onClick={() => setShowPassword((prev) => !prev)}
+              role="button"
+              tabIndex={0}
+            >
+              {showPassword ? 'Hide' : 'Show'}
+            </span>
+          </div>
 
-        <button className="signup-button" type="submit">
-          Sign Up
-        </button>
-      </form>
+          <div className="password-wrapper">
+            <input
+              type={showPassword2 ? 'text' : 'password'}
+              name="password2"
+              placeholder="Confirm password"
+              value={formData.password2}
+              onChange={handleChange}
+              required
+              autoComplete="new-password"
+              style={{ WebkitTextSecurity: showPassword2 ? 'none' : 'disc' }}
+            />
+            <span
+              className="toggle-password"
+              onClick={() => setShowPassword2((prev) => !prev)}
+              role="button"
+              tabIndex={0}
+            >
+              {showPassword2 ? 'Hide' : 'Show'}
+            </span>
+          </div>
+
+          {error && <p className="form-error">{error}</p>}
+
+          <button className="form-button" type="submit">
+            Sign Up
+          </button>
+        </form>
+      </div>
 
       {showPopup && (
         <Popup
@@ -158,6 +164,6 @@ export default function Signup({ onSignupSuccess }) {
           onClose={handlePopupClose}
         />
       )}
-    </div>
+    </>
   );
 }
