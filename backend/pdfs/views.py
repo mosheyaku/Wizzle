@@ -1,5 +1,6 @@
 import traceback
 import logging
+import re
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -62,11 +63,15 @@ class PDFTextExtractView(APIView):
 
 class TranslateWordView(APIView):
     def post(self, request, *args, **kwargs):
-        word = request.data.get('word')
-        if not word:
+        raw_word = request.data.get('word')
+        if not raw_word:
             return Response({'error': 'No word provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+        cleaned_word = re.sub(r'[^\w\d]', '', raw_word)
+        if not cleaned_word:
+            return Response({'error': 'Invalid word'}, status=status.HTTP_400_BAD_REQUEST)
         
-        cached = TranslationCache.objects.filter(word__iexact=word).first()
+        cached = TranslationCache.objects.filter(word__iexact=cleaned_word).first()
         if cached:
             return Response({'translated': cached.translated})
 
@@ -75,14 +80,14 @@ class TranslateWordView(APIView):
             'Ocp-Apim-Subscription-Region': AZURE_TRANSLATOR_REGION,
             'Content-type': 'application/json'
         }
-        body = [{'Text': word}]
+        body = [{'Text': cleaned_word}]
 
         try:
             response = requests.post(AZURE_TRANSLATOR_URL, headers=headers, json=body)
             response.raise_for_status()
             translated = response.json()[0]['translations'][0]['text']
 
-            TranslationCache.objects.create(word=word, translated=translated)
+            TranslationCache.objects.create(word=cleaned_word, translated=translated)
 
             return Response({'translated': translated})
 
