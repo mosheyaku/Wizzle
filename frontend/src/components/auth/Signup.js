@@ -46,13 +46,24 @@ export default function Signup({ onSignupSuccess }) {
         submitData
       );
 
+      const loginRes = await axios.post(
+        `${process.env.REACT_APP_API_BASE_URL}/api/token/`,
+        {
+          username: formData.email,
+          password: formData.password,
+        }
+      );
+
+      localStorage.setItem('accessToken', loginRes.data.access);
+      localStorage.setItem('refreshToken', loginRes.data.refresh);
+
       const userData = {
         first_name: res.data.first_name || formData.first_name,
         email: res.data.email || formData.email,
       };
 
       if (onSignupSuccess) {
-        onSignupSuccess(userData);
+        onSignupSuccess(userData, loginRes.data.access);
       }
 
       setShowPopup(true);
