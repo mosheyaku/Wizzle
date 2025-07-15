@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import './DisplayPDFWords.css';
 
-export default function DisplayPDFWords({ pdfId }) {
+export default function DisplayPDFWords({ pdfId, accessToken }) {
   const [pages, setPages] = useState([]);
   const [paginatedPages, setPaginatedPages] = useState([]);
   const [currentPage, setCurrentPage] = useState(() => {
@@ -13,6 +13,7 @@ export default function DisplayPDFWords({ pdfId }) {
   const [translatedWord, setTranslatedWord] = useState('');
   const [originalWord, setOriginalWord] = useState('');
   const [loading, setLoading] = useState(true);
+  const [saveLoading, setSaveLoading] = useState(false);
 
   const apiBaseUrl = process.env.REACT_APP_API_BASE_URL;
   const measureRef = useRef(null);
@@ -88,13 +89,47 @@ export default function DisplayPDFWords({ pdfId }) {
   }, [allWords]);
 
   const handleTranslate = async (word) => {
+    const cleanedWord = word.replace(/[^\w\d]/g, '');
+
     try {
-      const res = await axios.post(`${apiBaseUrl}/api/pdf/translate/`, { word });
-      setOriginalWord(word);
+      const res = await axios.post(`${apiBaseUrl}/api/pdf/translate/`, { word: cleanedWord });
+      setOriginalWord(cleanedWord);
       setTranslatedWord(res.data.translated);
       setShowPopup(true);
     } catch (err) {
       console.error('Translation failed:', err);
+    }
+  };
+
+  const handleSaveWord = async () => {
+    setSaveLoading(true);
+    try {
+      console.log('Saving word with access token:', accessToken);
+
+      if (!accessToken) {
+        alert('Please login to save words.');
+        setSaveLoading(false);
+        return;
+      }
+
+      await axios.post(
+        `${apiBaseUrl}/api/learnwords/save/`,
+        { word: originalWord, translation: translatedWord },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      alert(`✅ Word "${originalWord}" saved!`);
+    } catch (err) {
+      console.error('Save word failed:', err);
+      alert('❌ Failed to save word.');
+    } finally {
+      setSaveLoading(false);
+      setShowPopup(false);
+      setTranslatedWord('');
+      setOriginalWord('');
     }
   };
 
@@ -120,8 +155,7 @@ export default function DisplayPDFWords({ pdfId }) {
     });
   };
 
-  if (loading)
-    return <p className="book-loading">Loading PDF content...</p>;
+  if (loading) return <p className="book-loading">Loading PDF content...</p>;
 
   return (
     <>
@@ -188,9 +222,33 @@ export default function DisplayPDFWords({ pdfId }) {
             <h2>Translated</h2>
             <p className="original-word">{originalWord}</p>
             <p className="translated-word">{translatedWord}</p>
-            <button onClick={closePopup} aria-label="Close translation popup">
-              Close
-            </button>
+            <div
+              style={{
+                marginTop: '1.5rem',
+                display: 'flex',
+                justifyContent: 'center',
+                gap: '1rem',
+              }}
+            >
+              <button
+                onClick={() => {
+                  console.log('Save button clicked');
+                  handleSaveWord();
+                }}
+                disabled={saveLoading}
+                aria-label="Save translated word"
+                style={{ flex: 1 }}
+              >
+                {saveLoading ? 'Saving...' : 'Save'}
+              </button>
+              <button
+                onClick={closePopup}
+                aria-label="Close translation popup"
+                style={{ flex: 1 }}
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}

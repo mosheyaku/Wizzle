@@ -44,7 +44,11 @@ export default function Login({ onLoginSuccess }) {
 
       const userData = userRes.data;
 
-      onLoginSuccess(userData);
+      onLoginSuccess(userData, {
+        access: res.data.access,
+        refresh: res.data.refresh,
+      });
+
 
       setShowPopup(true);
     } catch (err) {
