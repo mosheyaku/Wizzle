@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'vocab_learning',
     'accounts',
     'pdfs',
     'rest_framework',
