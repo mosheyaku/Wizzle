@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'learnwords',
     'accounts',
     'pdfs',
     'rest_framework',
