@@ -13,7 +13,7 @@ class Signup(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CurrentUser(APIView):
+class Login(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
