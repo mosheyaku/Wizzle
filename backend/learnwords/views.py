@@ -28,3 +28,10 @@ class SavedWordCreateView(APIView):
 
         serializer = SavedWordSerializer(obj)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+
+class SavedWordListView(generics.ListAPIView):
+        serializer_class = SavedWordSerializer
+        permission_classes = [permissions.IsAuthenticated]
+        def get_queryset(self):
+            return SavedWord.objects.filter(user=self.request.user).order_by('-saved_at')

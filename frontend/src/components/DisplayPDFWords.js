@@ -90,7 +90,6 @@ export default function DisplayPDFWords({ pdfId, accessToken }) {
 
   const handleTranslate = async (word) => {
     const cleanedWord = word.replace(/[^\w\d]/g, '');
-
     try {
       const res = await axios.post(`${apiBaseUrl}/api/pdf/translate/`, { word: cleanedWord });
       setOriginalWord(cleanedWord);
@@ -104,8 +103,6 @@ export default function DisplayPDFWords({ pdfId, accessToken }) {
   const handleSaveWord = async () => {
     setSaveLoading(true);
     try {
-      console.log('Saving word with access token:', accessToken);
-
       if (!accessToken) {
         alert('Please login to save words.');
         setSaveLoading(false);
@@ -183,68 +180,38 @@ export default function DisplayPDFWords({ pdfId, accessToken }) {
             )}
           </div>
           <div className="pagination-buttons">
-            <button
-              onClick={prevPage}
-              disabled={currentPage === 0}
-              aria-label="Previous page"
-            >
+            <button onClick={prevPage} disabled={currentPage === 0}>
               ⬅ Previous
             </button>
-            <span aria-live="polite" aria-atomic="true">
-              Page {currentPage + 1} of {paginatedPages.length || 1}
-            </span>
-            <button
-              onClick={nextPage}
-              disabled={currentPage === paginatedPages.length - 1}
-              aria-label="Next page"
-            >
+            <span>Page {currentPage + 1} of {paginatedPages.length || 1}</span>
+            <button onClick={nextPage} disabled={currentPage === paginatedPages.length - 1}>
               Next ➡
             </button>
           </div>
         </div>
       </div>
 
-      <div className="measure-container" ref={measureRef} aria-hidden="true" />
+      <div className="measure-container" ref={measureRef} />
 
       {showPopup && (
-        <div
-          className="popup-overlay"
-          role="dialog"
-          aria-modal="true"
-          onClick={closePopup}
-          tabIndex={-1}
-        >
-          <div
-            className="popup-card"
-            onClick={(e) => e.stopPropagation()}
-            tabIndex={0}
-          >
+        <div className="popup-overlay" onClick={closePopup}>
+          <div className="popup-card" onClick={(e) => e.stopPropagation()}>
             <h2>Translated</h2>
             <p className="original-word">{originalWord}</p>
             <p className="translated-word">{translatedWord}</p>
-            <div
-              style={{
-                marginTop: '1.5rem',
-                display: 'flex',
-                justifyContent: 'center',
-                gap: '1rem',
-              }}
-            >
-              <button
-                onClick={() => {
-                  console.log('Save button clicked');
-                  handleSaveWord();
-                }}
-                disabled={saveLoading}
-                aria-label="Save translated word"
-                style={{ flex: 1 }}
-              >
-                {saveLoading ? 'Saving...' : 'Save'}
-              </button>
+            <div className="popup-actions">
+              {accessToken && (
+                <button
+                  onClick={handleSaveWord}
+                  disabled={saveLoading}
+                  className="popup-btn"
+                >
+                  {saveLoading ? 'Saving...' : 'Save'}
+                </button>
+              )}
               <button
                 onClick={closePopup}
-                aria-label="Close translation popup"
-                style={{ flex: 1 }}
+                className="popup-btn"
               >
                 Close
               </button>

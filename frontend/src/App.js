@@ -11,6 +11,7 @@ import UploadPDF from './components/UploadPDF';
 import DisplayPDFWords from './components/DisplayPDFWords';
 import Signup from './components/auth/Signup';
 import Login from './components/auth/Login';
+import Vocabulary from './components/Vocabulary';
 import './App.css';
 import axios from 'axios';
 
@@ -22,7 +23,7 @@ function MainPage({ pdfId, onUploadSuccess, user, accessToken }) {
       {pdfId && (
         <>
           <hr />
-          <DisplayPDFWords pdfId={pdfId} accessToken={accessToken} />
+          <DisplayPDFWords pdfId={pdfId} accessToken={accessToken} user={user} />
         </>
       )}
     </div>
@@ -43,7 +44,7 @@ function ConfirmLogoutPopup({ onConfirm, onCancel }) {
   );
 }
 
-function Layout({ children, user, setUser }) {
+function Layout({ children, user, setUser, setAccessToken, setRefreshToken }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [showLogoutPopup, setShowLogoutPopup] = useState(false);
@@ -51,6 +52,8 @@ function Layout({ children, user, setUser }) {
   const confirmLogout = () => {
     localStorage.clear();
     setUser(null);
+    setAccessToken(null);
+    setRefreshToken(null);
     setShowLogoutPopup(false);
     navigate('/');
   };
@@ -61,6 +64,7 @@ function Layout({ children, user, setUser }) {
         <h1 className="site-title">Wizzle PDF Viewer</h1>
         <nav>
           <Link to="/" className="nav-link">Home</Link>
+          {user && <Link to="/vocabulary" className="nav-link">My Words</Link>}
           {!user && location.pathname !== '/login' && (
             <Link to="/login" className="nav-link">Login</Link>
           )}
@@ -157,7 +161,7 @@ function App() {
       setRefreshToken(null);
       localStorage.clear();
     }
-  }, []);
+  }, [accessToken, refreshToken, user]);
 
   useEffect(() => {
     const validateToken = async () => {
@@ -199,7 +203,7 @@ function App() {
           localStorage.clear();
         }
       }
-    }, 12 * 60 * 1000); 
+    }, 12 * 60 * 1000); // every 12 minutes
 
     return () => clearInterval(interval);
   }, [refreshToken]);
@@ -210,7 +214,7 @@ function App() {
         <Route
           path="/"
           element={
-            <Layout user={user} setUser={setUser}>
+            <Layout user={user} setUser={setUser} setAccessToken={setAccessToken} setRefreshToken={setRefreshToken}>
               <MainPage
                 pdfId={pdfId}
                 onUploadSuccess={handleUploadSuccess}
@@ -223,10 +227,10 @@ function App() {
         <Route
           path="/signup"
           element={
-            <Layout user={user} setUser={setUser}>
+            <Layout user={user} setUser={setUser} setAccessToken={setAccessToken} setRefreshToken={setRefreshToken}>
               <Signup
-                onSignupSuccess={(userData) =>
-                  handleLoginSignupSuccess(userData)
+                onSignupSuccess={(userData, tokens) =>
+                  handleLoginSignupSuccess(userData, tokens)
                 }
               />
             </Layout>
@@ -235,12 +239,20 @@ function App() {
         <Route
           path="/login"
           element={
-            <Layout user={user} setUser={setUser}>
+            <Layout user={user} setUser={setUser} setAccessToken={setAccessToken} setRefreshToken={setRefreshToken}>
               <Login
                 onLoginSuccess={(userData, tokens) =>
                   handleLoginSignupSuccess(userData, tokens)
                 }
               />
+            </Layout>
+          }
+        />
+        <Route
+          path="/vocabulary"
+          element={
+            <Layout user={user} setUser={setUser} setAccessToken={setAccessToken} setRefreshToken={setRefreshToken}>
+              <Vocabulary accessToken={accessToken} />
             </Layout>
           }
         />

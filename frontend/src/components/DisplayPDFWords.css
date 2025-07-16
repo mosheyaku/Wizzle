@@ -122,7 +122,6 @@ body {
   cursor: not-allowed;
 }
 
-/* Glassy Popup */
 .popup-overlay {
   position: fixed;
   top: 0;
@@ -193,7 +192,6 @@ body {
   background-color: var(--accent-hover);
 }
 
-/* Loader + measurement */
 .book-loading {
   font-family: 'Merriweather', serif;
   font-size: 22px;
@@ -298,4 +296,30 @@ body {
     height: 85vh;
     font-size: 16px;
   }
+}
+
+
+.popup-actions {
+  margin-top: 1.2rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.2rem;
+}
+
+.popup-btn {
+  padding: 0.5rem 1.3rem;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-family: 'Lora', serif;
+  background-color: var(--accent-color);
+  color: white;
+  transition: background 0.3s;
+  margin: 0;
+}
+
+.popup-btn:hover {
+  background-color: var(--accent-hover);
 }
