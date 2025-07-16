@@ -29,8 +29,11 @@ SECRET_KEY = 'django-insecure-u7fy2+=3a&m4g6$mqx6h=(66*x-1%^eh*-)4y21g2*!!x%yclx
 DEBUG = True
 
 front = os.getenv("FRONTEND_BASE_URL", "127.0.0.1")
+self = os.getenv("BACKEND_BASE_URL", "localhost")
 
-ALLOWED_HOSTS = [front]
+ALLOWED_HOSTS = [
+    front
+    ]
 
 
 # Application definition
