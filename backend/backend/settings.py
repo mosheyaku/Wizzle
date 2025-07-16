@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+import os
 from datetime import timedelta
 from pathlib import Path
 from decouple import config
@@ -28,7 +28,9 @@ SECRET_KEY = 'django-insecure-u7fy2+=3a&m4g6$mqx6h=(66*x-1%^eh*-)4y21g2*!!x%yclx
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+front = os.getenv("FRONTEND_BASE_URL", "127.0.0.1")
+
+ALLOWED_HOSTS = [front]
 
 
 # Application definition
