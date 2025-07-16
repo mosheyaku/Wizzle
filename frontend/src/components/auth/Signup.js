@@ -43,7 +43,7 @@ export default function Signup({ onSignupSuccess }) {
     try {
       console.log("BASE_URL:", process.env.REACT_APP_API_BASE_URL)
       const res = await axios.post(
-        `https://${process.env.REACT_APP_API_BASE_URL}/api/users/register/`,
+        `${process.env.REACT_APP_API_BASE_URL}/api/users/register/`,
         submitData
       );
 
