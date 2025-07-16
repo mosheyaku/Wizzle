@@ -19,6 +19,7 @@ export default function Signup({ onSignupSuccess }) {
   const [showPassword2, setShowPassword2] = useState(false);
 
   const navigate = useNavigate();
+  const API_BASE = process.env.REACT_APP_API_BASE_URL;
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -41,14 +42,17 @@ export default function Signup({ onSignupSuccess }) {
     };
 
     try {
-      console.log("BASE_URL:", process.env.REACT_APP_API_BASE_URL)
+      if (!API_BASE) {
+        throw new Error('API_BASE_URL is not defined');
+      }
+
       const res = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/api/users/register/`,
+        `${API_BASE}/api/users/register/`,
         submitData
       );
 
       const loginRes = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/api/token/`,
+        `${API_BASE}/api/token/`,
         {
           username: formData.email,
           password: formData.password,
@@ -69,7 +73,7 @@ export default function Signup({ onSignupSuccess }) {
 
       setShowPopup(true);
     } catch (err) {
-      console.error('Signup error:', err.response);
+      console.error('Signup error:', err);
       const errors = err.response?.data;
       if (typeof errors === 'object') {
         const flat = Object.entries(errors)
