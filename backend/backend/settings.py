@@ -141,9 +141,9 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # React dev server
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",  # React dev server
+# ]
 
 
 AZURE_TRANSLATOR_KEY = config('AZURE_TRANSLATOR_KEY')
