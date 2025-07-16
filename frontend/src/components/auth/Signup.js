@@ -43,7 +43,7 @@ export default function Signup({ onSignupSuccess }) {
 
     try {
       if (!API_BASE) {
-        throw new Error('API_BASE_URL is not defined');
+        throw new Error('REACT_APP_API_BASE_URL is not defined in environment variables.');
       }
 
       const res = await axios.post(
@@ -74,12 +74,17 @@ export default function Signup({ onSignupSuccess }) {
       setShowPopup(true);
     } catch (err) {
       console.error('Signup error:', err);
+      console.log("Full error response:", err.response?.data);
+
       const errors = err.response?.data;
       if (typeof errors === 'object') {
         const flat = Object.entries(errors)
           .map(([field, msg]) => `${field}: ${Array.isArray(msg) ? msg[0] : msg}`)
           .join('\n');
         setError(flat);
+      } else if (typeof errors === 'string') {
+        // Handles plain text or HTML response
+        setError(errors.includes('<!DOCTYPE html>') ? 'Unexpected HTML error from server.' : errors);
       } else {
         setError('Signup failed. Please check your inputs.');
       }
