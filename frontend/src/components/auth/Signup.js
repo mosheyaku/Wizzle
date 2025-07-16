@@ -19,6 +19,7 @@ export default function Signup({ onSignupSuccess }) {
   const [showPassword2, setShowPassword2] = useState(false);
 
   const navigate = useNavigate();
+  const API_BASE = process.env.REACT_APP_API_BASE_URL;
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -41,13 +42,21 @@ export default function Signup({ onSignupSuccess }) {
     };
 
     try {
+<<<<<<< HEAD
+      console.log("printing API_BASE_URL:",process.env.REACT_APP_API_BASE_URL);
+=======
+      if (!API_BASE) {
+        throw new Error('REACT_APP_API_BASE_URL is not defined in environment variables.');
+      }
+
+>>>>>>> a2c54b284790dc67053fb022dda06f19491cae07
       const res = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/api/users/register/`,
+        `${API_BASE}/api/users/register/`,
         submitData
       );
 
       const loginRes = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/api/token/`,
+        `${API_BASE}/api/token/`,
         {
           username: formData.email,
           password: formData.password,
@@ -68,13 +77,18 @@ export default function Signup({ onSignupSuccess }) {
 
       setShowPopup(true);
     } catch (err) {
-      console.error('Signup error:', err.response);
+      console.error('Signup error:', err);
+      console.log("Full error response:", err.response?.data);
+
       const errors = err.response?.data;
       if (typeof errors === 'object') {
         const flat = Object.entries(errors)
           .map(([field, msg]) => `${field}: ${Array.isArray(msg) ? msg[0] : msg}`)
           .join('\n');
         setError(flat);
+      } else if (typeof errors === 'string') {
+        // Handles plain text or HTML response
+        setError(errors.includes('<!DOCTYPE html>') ? 'Unexpected HTML error from server.' : errors);
       } else {
         setError('Signup failed. Please check your inputs.');
       }
