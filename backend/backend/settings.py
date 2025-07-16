@@ -32,7 +32,8 @@ front = os.getenv("FRONTEND_BASE_URL", "127.0.0.1")
 self = os.getenv("BACKEND_BASE_URL", "localhost")
 
 ALLOWED_HOSTS = [
-    front
+    front,
+    self
     ]
 
 
