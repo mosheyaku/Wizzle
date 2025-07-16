@@ -42,14 +42,10 @@ export default function Signup({ onSignupSuccess }) {
     };
 
     try {
-<<<<<<< HEAD
-      console.log("printing API_BASE_URL:",process.env.REACT_APP_API_BASE_URL);
-=======
       if (!API_BASE) {
         throw new Error('REACT_APP_API_BASE_URL is not defined in environment variables.');
       }
 
->>>>>>> a2c54b284790dc67053fb022dda06f19491cae07
       const res = await axios.post(
         `${API_BASE}/api/users/register/`,
         submitData
