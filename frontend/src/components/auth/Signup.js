@@ -47,7 +47,7 @@ export default function Signup({ onSignupSuccess }) {
       }
 
       const res = await axios.post(
-        `${API_BASE}/api/users/register/`,
+        `https://${API_BASE}/api/users/register/`,
         submitData
       );
 
