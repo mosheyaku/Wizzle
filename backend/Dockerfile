@@ -18,5 +18,5 @@ COPY . .
 # Expose port (optional, default for Django dev server)
 EXPOSE 8000
 
-# Run Django dev server (not for production)
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Run migrations and then start the Django dev server
+CMD python manage.py migrate && python manage.py runserver 0.0.0.0:8000

@@ -29,8 +29,12 @@ SECRET_KEY = 'django-insecure-u7fy2+=3a&m4g6$mqx6h=(66*x-1%^eh*-)4y21g2*!!x%yclx
 DEBUG = True
 
 front = os.getenv("FRONTEND_BASE_URL", "127.0.0.1")
+self = os.getenv("BACKEND_BASE_URL", "localhost")
 
-ALLOWED_HOSTS = [front]
+ALLOWED_HOSTS = [
+    front,
+    self
+    ]
 
 
 # Application definition
@@ -137,9 +141,9 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # React dev server
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",  # React dev server
+# ]
 
 
 AZURE_TRANSLATOR_KEY = config('AZURE_TRANSLATOR_KEY')
@@ -160,3 +164,6 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
 }
+
+
+CORS_ALLOW_ALL_ORIGINS = True
