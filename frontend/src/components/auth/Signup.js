@@ -46,6 +46,8 @@ export default function Signup({ onSignupSuccess }) {
         throw new Error('REACT_APP_API_BASE_URL is not defined in environment variables.');
       }
 
+      console.log("Note: printing API_Base full path:", `${API_BASE}/api/users/register/`);
+
       const res = await axios.post(
         `${API_BASE}/api/users/register/`,
         submitData
