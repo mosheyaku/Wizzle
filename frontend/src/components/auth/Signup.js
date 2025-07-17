@@ -46,23 +46,18 @@ export default function Signup({ onSignupSuccess }) {
         throw new Error('REACT_APP_API_BASE_URL is not defined in environment variables.');
       }
 
-      console.log("Note: currently printing API_Base full path:", `${API_BASE}/api/users/register/`);
+      const res = await axios.post(`${API_BASE}/api/users/register/`, submitData);
 
-      const res = await axios.post(
-        `${API_BASE}/api/users/register/`,
-        submitData
-      );
+      const loginRes = await axios.post(`${API_BASE}/api/token/`, {
+        username: formData.email,
+        password: formData.password,
+      });
 
-      const loginRes = await axios.post(
-        `${API_BASE}/api/token/`,
-        {
-          username: formData.email,
-          password: formData.password,
-        }
-      );
+      const accessToken = loginRes.data.access;
+      const refreshToken = loginRes.data.refresh;
 
-      localStorage.setItem('accessToken', loginRes.data.access);
-      localStorage.setItem('refreshToken', loginRes.data.refresh);
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
 
       const userData = {
         first_name: res.data.first_name || formData.first_name,
@@ -70,7 +65,10 @@ export default function Signup({ onSignupSuccess }) {
       };
 
       if (onSignupSuccess) {
-        onSignupSuccess(userData, loginRes.data.access);
+        onSignupSuccess(userData, {
+          access: accessToken,
+          refresh: refreshToken,
+        });
       }
 
       setShowPopup(true);
@@ -85,7 +83,6 @@ export default function Signup({ onSignupSuccess }) {
           .join('\n');
         setError(flat);
       } else if (typeof errors === 'string') {
-        // Handles plain text or HTML response
         setError(errors.includes('<!DOCTYPE html>') ? 'Unexpected HTML error from server.' : errors);
       } else {
         setError('Signup failed. Please check your inputs.');
