@@ -21,20 +21,5 @@
 
 .popup-box p {
   font-size: 1.2rem;
-  margin-bottom: 1rem;
-}
-
-.popup-box button {
-  background: #b49a78;
-  color: white;
-  border: none;
-  padding: 0.6rem 1.2rem;
-  font-size: 1rem;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.popup-box button:hover {
-  background: #9f8766;
+  margin: 0;
 }

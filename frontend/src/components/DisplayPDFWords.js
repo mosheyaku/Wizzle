@@ -118,11 +118,16 @@ export default function DisplayPDFWords({ pdfId, accessToken }) {
           },
         }
       );
-      alert(`✅ Word "${originalWord}" saved!`);
+
+      setTimeout(() => {
+        setSaveLoading(false);
+        setShowPopup(false);
+        setTranslatedWord('');
+        setOriginalWord('');
+      }, 150);
     } catch (err) {
       console.error('Save word failed:', err);
       alert('❌ Failed to save word.');
-    } finally {
       setSaveLoading(false);
       setShowPopup(false);
       setTranslatedWord('');
@@ -212,6 +217,7 @@ export default function DisplayPDFWords({ pdfId, accessToken }) {
               <button
                 onClick={closePopup}
                 className="popup-btn"
+                disabled={saveLoading} 
               >
                 Close
               </button>
