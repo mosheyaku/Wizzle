@@ -248,12 +248,15 @@ body {
     box-shadow: none;
     border: none;
     justify-content: space-between;
+    display: flex;
+    flex-direction: column;
   }
 
   .book-page {
     font-size: 16px;
     line-height: 1.7;
-    overflow-y: auto;
+    overflow-y: hidden; 
+    flex-grow: 1;      
   }
 
   .pagination-buttons {
@@ -288,7 +291,6 @@ body {
   .translated-word {
     font-size: 15px;
     color: var(--accent-color);
-
   }
 
   .measure-container {
@@ -297,7 +299,6 @@ body {
     font-size: 16px;
   }
 }
-
 
 .popup-actions {
   margin-top: 1.2rem;

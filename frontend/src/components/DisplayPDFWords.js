@@ -17,6 +17,8 @@ export default function DisplayPDFWords({ pdfId, accessToken }) {
 
   const apiBaseUrl = process.env.REACT_APP_API_BASE_URL;
   const measureRef = useRef(null);
+  const containerRef = useRef(null); 
+
   const [allWords, setAllWords] = useState([]);
 
   useEffect(() => {
@@ -52,12 +54,19 @@ export default function DisplayPDFWords({ pdfId, accessToken }) {
     const container = measureRef.current;
     if (!container) return;
 
+    const displayContainer = containerRef.current;
+
+    let maxHeight;
+    if (window.innerWidth <= 768 && displayContainer) {
+      maxHeight = displayContainer.clientHeight; 
+    } else {
+      maxHeight = container.clientHeight; 
+    }
+
     let chunks = [];
     let tempWords = [];
 
     container.innerHTML = '';
-    const maxHeight = container.clientHeight;
-
     for (let i = 0; i < allWords.length; i++) {
       const wordObj = allWords[i];
       const span = document.createElement('span');
@@ -163,7 +172,10 @@ export default function DisplayPDFWords({ pdfId, accessToken }) {
     <>
       <div className="book-container">
         <div className="book-frame">
-          <div className="book-page">
+          <div
+            className="book-page"
+            ref={containerRef} 
+          >
             {paginatedPages[currentPage] && (
               <div className="book-text">
                 {paginatedPages[currentPage].map((w, i) => (
@@ -188,8 +200,13 @@ export default function DisplayPDFWords({ pdfId, accessToken }) {
             <button onClick={prevPage} disabled={currentPage === 0}>
               ⬅ Previous
             </button>
-            <span>Page {currentPage + 1} of {paginatedPages.length || 1}</span>
-            <button onClick={nextPage} disabled={currentPage === paginatedPages.length - 1}>
+            <span>
+              Page {currentPage + 1} of {paginatedPages.length || 1}
+            </span>
+            <button
+              onClick={nextPage}
+              disabled={currentPage === paginatedPages.length - 1}
+            >
               Next ➡
             </button>
           </div>
@@ -217,7 +234,7 @@ export default function DisplayPDFWords({ pdfId, accessToken }) {
               <button
                 onClick={closePopup}
                 className="popup-btn"
-                disabled={saveLoading} 
+                disabled={saveLoading}
               >
                 Close
               </button>
