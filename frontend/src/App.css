@@ -26,6 +26,7 @@ body {
   position: sticky;
   top: 0;
   z-index: 1000;
+  flex-wrap: wrap;
 }
 
 .top-nav nav {
@@ -74,7 +75,6 @@ body {
 .logout-btn:hover {
   color: #a17a4e;
 }
-
 
 .popup-overlay {
   position: fixed;
@@ -141,4 +141,59 @@ body {
 
 .popup-actions .cancel:hover {
   background-color: #d8cdc2;
+}
+
+
+.menu-toggle {
+  display: none; 
+}
+
+@media (max-width: 767px) {
+  .top-nav {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    position: relative;
+  }
+
+  .menu-toggle {
+    display: block; 
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: #7b5c36;
+  }
+
+  .top-nav nav {
+    display: none;
+    flex-direction: column;
+    background-color: #fff8ed;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    border-top: 1px solid #e2d3bc;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    z-index: 999;
+  }
+
+  .top-nav.open nav {
+    display: flex;
+  }
+
+  .nav-link,
+  .nav-user,
+  .logout-btn {
+    font-size: 1.1rem;
+    padding: 0.6rem 0;
+    width: 100%;
+    text-align: left;
+  }
+
+  .logout-btn {
+    margin-left: 0;
+  }
 }
