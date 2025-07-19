@@ -140,7 +140,7 @@ export default function DisplayPDFWords({ pdfId, accessToken }) {
 
       await axios.post(
         `${apiBaseUrl}/api/learnwords/save/`,
-        { word: originalWord, translation: translatedWord },
+        { word: originalWord.toLowerCase(), translation: translatedWord },
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
