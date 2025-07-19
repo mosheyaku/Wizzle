@@ -15,6 +15,13 @@ body {
   color: #4a3b2e;
 }
 
+.site-title-link {
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-block;
+}
+
+
 .top-nav {
   background-color: #fff8ed;
   padding: 1rem 2rem;

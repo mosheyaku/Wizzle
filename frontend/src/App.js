@@ -63,7 +63,9 @@ function Layout({ children, user, setUser, setAccessToken, setRefreshToken }) {
   return (
     <>
       <header className={`top-nav ${menuOpen ? 'open' : ''}`}>
-        <h1 className="site-title">Wizzle PDF Viewer</h1>
+        <Link to="/" className="site-title-link" onClick={() => setMenuOpen(false)}>
+          <h1 className="site-title">Wizzle PDF Viewer</h1>
+        </Link>
         <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
           ☰
         </button>
