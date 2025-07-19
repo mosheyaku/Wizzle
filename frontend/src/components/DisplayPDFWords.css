@@ -290,7 +290,6 @@ body {
   .original-word,
   .translated-word {
     font-size: 15px;
-    color: var(--accent-color);
   }
 
   .measure-container {
@@ -323,4 +322,45 @@ body {
 
 .popup-btn:hover {
   background-color: var(--accent-hover);
+}
+
+.pagination-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  margin-top: 1.5rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.page-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.5rem 1rem;
+  background-color: var(--accent-color);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Lora', serif;
+  transition: background 0.3s ease;
+  font-size: 16px;
+}
+
+.page-btn:hover:not(:disabled) {
+  background-color: var(--accent-hover);
+}
+
+.page-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  color: #888;
+}
+
+.page-btn svg {
+  stroke: white;
+  flex-shrink: 0;
 }
