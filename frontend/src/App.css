@@ -197,3 +197,25 @@ body {
     margin-left: 0;
   }
 }
+
+.user-name-frame {
+  background-color: #f4e9d8;
+  color: #7b5c36;
+  padding: 4px 10px;
+  border-radius: 14px;
+  font-weight: 600;
+  font-size: 1rem;
+  box-shadow: 0 0 6px 1px #d4c3aa88;
+  display: inline-block;
+  user-select: none;
+}
+
+.nav-user {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: bold;
+  color: #7b5c36;
+  user-select: none;
+}
+

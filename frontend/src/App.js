@@ -56,7 +56,7 @@ function Layout({ children, user, setUser, setAccessToken, setRefreshToken }) {
     setAccessToken(null);
     setRefreshToken(null);
     setShowLogoutPopup(false);
-    setMenuOpen(false); 
+    setMenuOpen(false);
     navigate('/');
   };
 
@@ -69,28 +69,40 @@ function Layout({ children, user, setUser, setAccessToken, setRefreshToken }) {
         </button>
 
         <nav>
-          <Link to="/" className="nav-link" onClick={() => setMenuOpen(false)}>Home</Link>
-          {user && <Link to="/vocabulary" className="nav-link" onClick={() => setMenuOpen(false)}>My Words</Link>}
+          {user && (
+            <span className="nav-user" title="Connected">
+              <span className="user-name-frame">{user.first_name}</span>
+            </span>
+          )}
+          <Link to="/" className="nav-link" onClick={() => setMenuOpen(false)}>
+            Home
+          </Link>
+          {user && (
+            <Link to="/vocabulary" className="nav-link" onClick={() => setMenuOpen(false)}>
+              My Words
+            </Link>
+          )}
           {!user && location.pathname !== '/login' && (
-            <Link to="/login" className="nav-link" onClick={() => setMenuOpen(false)}>Login</Link>
+            <Link to="/login" className="nav-link" onClick={() => setMenuOpen(false)}>
+              Login
+            </Link>
           )}
           {!user && location.pathname !== '/signup' && (
-            <Link to="/signup" className="nav-link" onClick={() => setMenuOpen(false)}>Sign Up</Link>
+            <Link to="/signup" className="nav-link" onClick={() => setMenuOpen(false)}>
+              Sign Up
+            </Link>
           )}
           {user && (
-            <>
-              <span className="nav-user">{user.first_name}</span>
-              <button
-                className="nav-link logout-btn"
-                onClick={() => {
-                  setShowLogoutPopup(true);
-                  setMenuOpen(false);
-                }}
-                type="button"
-              >
-                Logout
-              </button>
-            </>
+            <button
+              className="nav-link logout-btn"
+              onClick={() => {
+                setShowLogoutPopup(true);
+                setMenuOpen(false);
+              }}
+              type="button"
+            >
+              Logout
+            </button>
           )}
         </nav>
       </header>
