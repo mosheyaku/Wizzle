@@ -2,6 +2,26 @@ import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import './DisplayPDFWords.css';
 
+const LeftArrow = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none" viewBox="0 0 24 24" stroke="currentColor"
+    strokeWidth={2} width="20" height="20"
+  >
+    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+  </svg>
+);
+
+const RightArrow = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none" viewBox="0 0 24 24" stroke="currentColor"
+    strokeWidth={2} width="20" height="20"
+  >
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+  </svg>
+);
+
 export default function DisplayPDFWords({ pdfId, accessToken }) {
   const [pages, setPages] = useState([]);
   const [paginatedPages, setPaginatedPages] = useState([]);
@@ -197,8 +217,8 @@ export default function DisplayPDFWords({ pdfId, accessToken }) {
             )}
           </div>
           <div className="pagination-buttons">
-            <button onClick={prevPage} disabled={currentPage === 0}>
-              ⬅ Previous
+            <button onClick={prevPage} disabled={currentPage === 0} className="page-btn">
+              <LeftArrow /> Previous
             </button>
             <span>
               Page {currentPage + 1} of {paginatedPages.length || 1}
@@ -206,8 +226,9 @@ export default function DisplayPDFWords({ pdfId, accessToken }) {
             <button
               onClick={nextPage}
               disabled={currentPage === paginatedPages.length - 1}
+              className="page-btn"
             >
-              Next ➡
+              Next <RightArrow />
             </button>
           </div>
         </div>
