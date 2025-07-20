@@ -55,13 +55,14 @@ body {
 
 .book-page {
   flex-grow: 1;
-  overflow: hidden;
+  overflow-y: auto; /* ← fix applied */
   font-size: 18.5px;
   line-height: 1.9;
   color: var(--text-color);
   text-align: justify;
   font-weight: 400;
   padding-right: 4px;
+  padding-bottom: 2em; /* ← fix applied */
 }
 
 .book-text span {
@@ -255,8 +256,9 @@ body {
   .book-page {
     font-size: 16px;
     line-height: 1.7;
-    overflow-y: hidden; 
-    flex-grow: 1;      
+    overflow-y: auto; /* ← fix here too */
+    flex-grow: 1;
+    padding-bottom: 2em; /* ← also added */
   }
 
   .pagination-buttons {
@@ -322,16 +324,6 @@ body {
 
 .popup-btn:hover {
   background-color: var(--accent-hover);
-}
-
-.pagination-buttons {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 16px;
-  margin-top: 1.5rem;
-  font-weight: 600;
-  color: var(--text-color);
 }
 
 .page-btn {

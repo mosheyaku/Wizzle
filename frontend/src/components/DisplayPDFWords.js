@@ -37,9 +37,11 @@ export default function DisplayPDFWords({ pdfId, accessToken }) {
 
   const apiBaseUrl = process.env.REACT_APP_API_BASE_URL;
   const measureRef = useRef(null);
-  const containerRef = useRef(null); 
+  const containerRef = useRef(null);
 
   const [allWords, setAllWords] = useState([]);
+
+  const resizeTimeout = useRef(null);
 
   useEffect(() => {
     const fetchText = async () => {
@@ -65,23 +67,36 @@ export default function DisplayPDFWords({ pdfId, accessToken }) {
     setAllWords(flattened);
   }, [pages]);
 
-  useEffect(() => {
+  const paginateWords = () => {
     if (!allWords.length) {
       setPaginatedPages([]);
       return;
     }
 
     const container = measureRef.current;
-    if (!container) return;
-
     const displayContainer = containerRef.current;
+    if (!container || !displayContainer) return;
 
-    let maxHeight;
-    if (window.innerWidth <= 768 && displayContainer) {
-      maxHeight = displayContainer.clientHeight; 
-    } else {
-      maxHeight = container.clientHeight; 
-    }
+    const computedStyle = window.getComputedStyle(displayContainer);
+    container.style.width = computedStyle.width;
+    container.style.fontSize = computedStyle.fontSize;
+    container.style.lineHeight = computedStyle.lineHeight;
+    container.style.fontWeight = computedStyle.fontWeight;
+    container.style.fontFamily = computedStyle.fontFamily;
+    container.style.padding = computedStyle.padding;
+    container.style.letterSpacing = computedStyle.letterSpacing;
+    container.style.wordSpacing = computedStyle.wordSpacing;
+    container.style.whiteSpace = 'normal';
+
+    let maxHeight = displayContainer.clientHeight;
+
+    const paddingBuffer = 10; 
+    maxHeight -= paddingBuffer;
+
+    const lineHeightStr = window.getComputedStyle(container).lineHeight;
+    const lineHeight = parseFloat(lineHeightStr) || 28;
+
+    const maxLines = Math.floor(maxHeight / lineHeight);
 
     let chunks = [];
     let tempWords = [];
@@ -96,7 +111,8 @@ export default function DisplayPDFWords({ pdfId, accessToken }) {
 
       tempWords.push(wordObj);
 
-      if (container.scrollHeight > maxHeight) {
+      const linesUsed = Math.round(container.scrollHeight / lineHeight);
+      if (linesUsed > maxLines) {
         tempWords.pop();
         container.removeChild(span);
 
@@ -115,6 +131,26 @@ export default function DisplayPDFWords({ pdfId, accessToken }) {
     }
 
     setPaginatedPages(chunks);
+
+    setCurrentPage((p) => (p >= chunks.length ? 0 : p));
+  };
+
+  useEffect(() => {
+    paginateWords();
+  }, [allWords]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      clearTimeout(resizeTimeout.current);
+      resizeTimeout.current = setTimeout(() => {
+        paginateWords();
+      }, 200);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => {
+      clearTimeout(resizeTimeout.current);
+      window.removeEventListener('resize', handleResize);
+    };
   }, [allWords]);
 
   const handleTranslate = async (word) => {
@@ -194,7 +230,7 @@ export default function DisplayPDFWords({ pdfId, accessToken }) {
         <div className="book-frame">
           <div
             className="book-page"
-            ref={containerRef} 
+            ref={containerRef}
           >
             {paginatedPages[currentPage] && (
               <div className="book-text">
