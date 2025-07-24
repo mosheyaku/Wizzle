@@ -202,19 +202,18 @@ body {
 }
 
 .measure-container {
-  position: fixed;
-  top: -10000px;
-  left: -10000px;
-  width: 700px;
-  height: 420px;
-  font-family: 'Merriweather', serif;
-  font-size: 18.5px;
-  line-height: 1.9;
+  visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: -9999px;
   white-space: normal;
   word-wrap: break-word;
-  overflow: visible;
-  visibility: hidden;
-  pointer-events: none;
+  width: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+  font-size: 16px;
+  line-height: 1.6;
+  font-family: Arial, sans-serif;
 }
 
 .measure-word {

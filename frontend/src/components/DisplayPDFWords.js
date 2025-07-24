@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import axios from 'axios';
 import './DisplayPDFWords.css';
 
@@ -67,7 +67,7 @@ export default function DisplayPDFWords({ pdfId, accessToken }) {
     setAllWords(flattened);
   }, [pages]);
 
-  const paginateWords = () => {
+const paginateWords = useCallback(() => {
     if (!allWords.length) {
       setPaginatedPages([]);
       return;
@@ -87,17 +87,8 @@ export default function DisplayPDFWords({ pdfId, accessToken }) {
     container.style.letterSpacing = computedStyle.letterSpacing;
     container.style.wordSpacing = computedStyle.wordSpacing;
     container.style.whiteSpace = 'normal';
-
-    let maxHeight = displayContainer.clientHeight;
-
-    const paddingBuffer = 10; 
-    maxHeight -= paddingBuffer;
-
-    const lineHeightStr = window.getComputedStyle(container).lineHeight;
-    const lineHeight = parseFloat(lineHeightStr) || 28;
-
-    const maxLines = Math.floor(maxHeight / lineHeight);
-
+    container.style.boxSizing = computedStyle.boxSizing || 'border-box';
+    const maxHeight = displayContainer.clientHeight;
     let chunks = [];
     let tempWords = [];
 
@@ -111,14 +102,13 @@ export default function DisplayPDFWords({ pdfId, accessToken }) {
 
       tempWords.push(wordObj);
 
-      const linesUsed = Math.round(container.scrollHeight / lineHeight);
-      if (linesUsed > maxLines) {
+      if (container.scrollHeight > maxHeight) {
         tempWords.pop();
         container.removeChild(span);
-
-        chunks.push(tempWords);
+        if (tempWords.length > 0) {
+          chunks.push(tempWords);
+        }
         tempWords = [wordObj];
-
         container.innerHTML = '';
         const newSpan = document.createElement('span');
         newSpan.textContent = wordObj.word + ' ';
@@ -133,25 +123,25 @@ export default function DisplayPDFWords({ pdfId, accessToken }) {
     setPaginatedPages(chunks);
 
     setCurrentPage((p) => (p >= chunks.length ? 0 : p));
+  }, [allWords]);
+
+useEffect(() => {
+  paginateWords();
+}, [paginateWords]);
+
+useEffect(() => {
+  const handleResize = () => {
+    clearTimeout(resizeTimeout.current);
+    resizeTimeout.current = setTimeout(() => {
+      paginateWords();
+    }, 200);
   };
-
-  useEffect(() => {
-    paginateWords();
-  }, [allWords]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      clearTimeout(resizeTimeout.current);
-      resizeTimeout.current = setTimeout(() => {
-        paginateWords();
-      }, 200);
-    };
-    window.addEventListener('resize', handleResize);
-    return () => {
-      clearTimeout(resizeTimeout.current);
-      window.removeEventListener('resize', handleResize);
-    };
-  }, [allWords]);
+  window.addEventListener('resize', handleResize);
+  return () => {
+    clearTimeout(resizeTimeout.current);
+    window.removeEventListener('resize', handleResize);
+  };
+}, [paginateWords]);
 
   const handleTranslate = async (word) => {
     const cleanedWord = word.replace(/[^\w\d]/g, '');
