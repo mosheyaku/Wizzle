@@ -30,3 +30,4 @@ repetition system for memorization.
 - **Azure AI Translator API** - for word translations
 - **PyMuPDF (fitz)** - for PDF parsing
 - **Spaced Repetition Logic** - to adaptively schedule word reviews
+
