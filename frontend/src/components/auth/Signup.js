@@ -180,7 +180,7 @@ export default function Signup({ onSignupSuccess }) {
 
       {showPopup && (
         <Popup
-          message="🎉 Account created successfully!"
+          message="Account created successfully!🎉"
           onClose={handlePopupClose}
         />
       )}

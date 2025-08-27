@@ -160,7 +160,7 @@ export default function Vocabulary({ accessToken }) {
       {showPopup && (
         <div className="popup-overlay" role="dialog" aria-modal="true">
           <div className="popup-box">
-            <h3>🎉 Word Learned!</h3>
+            <h3>Word Learned!🎉</h3>
             <p>
               You have fully learned <strong>{learnedWord.word}</strong>.
             </p>

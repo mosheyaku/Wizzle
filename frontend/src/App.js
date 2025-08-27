@@ -18,7 +18,7 @@ import axios from 'axios';
 function MainPage({ pdfId, onUploadSuccess, user, accessToken }) {
   return (
     <div className={`app-container ${pdfId ? 'uploaded' : ''}`}>
-      {user && <p className="welcome-message">👋 Hello, {user.first_name}!</p>}
+      {user && <p className="welcome-message">Hello, {user.first_name}!👋</p>}
       <UploadPDF onSuccess={onUploadSuccess} />
       {pdfId && (
         <>

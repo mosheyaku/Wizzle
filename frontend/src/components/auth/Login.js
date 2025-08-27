@@ -118,7 +118,7 @@ export default function Login({ onLoginSuccess }) {
 
       {showPopup && (
         <Popup
-          message="🎉 Successfully logged in!"
+          message="Successfully logged in!🎉"
           onClose={handlePopupClose}
         />
       )}
